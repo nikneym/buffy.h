@@ -1,22 +1,34 @@
 /* License is included at the end of the file */
 #ifndef BUFFY_H
 #define BUFFY_H
-#if defined(BUFFY_IMPL)
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-#define BUFFY_SMALL  (size_t) 64
-#define BUFFY_MEDIUM (size_t) 512
-#define BUFFY_LARGE  (size_t) 1024
-#define BUFFY_XL     (size_t) 2048
-#define BUFFY_XXL    (size_t) 4096
 
 typedef struct buffy_t {
   char *data;
   size_t cap;
   size_t len;
 } buffy_t;
+
+int  buffy_init (buffy_t *buf, size_t sz);
+int  buffy_add  (buffy_t *buf, const char *str);
+int  buffy_addl (buffy_t *buf, const char *str, size_t len);
+void buffy_sub  (buffy_t *buf, size_t start, size_t end);
+void buffy_del  (buffy_t *buf, size_t sz);
+void buffy_fill (buffy_t *buf, char c);
+void buffy_clear(buffy_t *buf);
+void buffy_free (buffy_t *buf);
+
+#endif
+
+#if defined(BUFFY_IMPL)
+
+#define BUFFY_SMALL  (size_t) 64
+#define BUFFY_MEDIUM (size_t) 512
+#define BUFFY_LARGE  (size_t) 1024
+#define BUFFY_XL     (size_t) 2048
+#define BUFFY_XXL    (size_t) 4096
 
 // buffer initializer, must be called once
 int buffy_init(buffy_t *buf, size_t sz) {
@@ -109,7 +121,6 @@ void buffy_free(buffy_t *buf) {
   return free(buf->data);
 }
 
-#endif
 #endif
 /*
 MIT License
