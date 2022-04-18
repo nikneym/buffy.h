@@ -17,11 +17,9 @@ typedef struct buffy_t {
 
 // buffer initializer, must be called once
 int buffy_init(buffy_t *buf, size_t sz) {
-  buf->data = (char *)malloc(sizeof(char) * sz);
+  buf->data = (char *)calloc(sz, sizeof(char) * sz);
   if (buf->data == NULL)
     return 1;
-
-  memset(buf->data, 0, sz);
 
   buf->cap = sz;
   buf->len = 0;
@@ -30,40 +28,45 @@ int buffy_init(buffy_t *buf, size_t sz) {
 }
 
 // insert bytes to the buffer
-void buffy_add(buffy_t *buf, const char *str) {
+int buffy_add(buffy_t *buf, const char *str) {
   size_t sz = strlen(str);
   if ((buf->cap - buf->len) - 1 < sz) {
-    buf->cap += sz - (buf->cap - buf->len) + 1;
-    buf->data = realloc(buf->data, buf->cap);
+    size_t newsize = buf->cap + sz - (buf->cap - buf->len) + 1;
+    buf->data = realloc(buf->data, newsize);
+    if (buf->data == NULL)
+      return -1;
+
+    buf->cap = newsize;
   }
 
-  //memmove(&buf->data[buf->len], str, sz);
-  while (*str) {
-    memset(&buf->data[buf->len], *str, 1);
-    buf->len++;
-    str++;
-  }
+  void *err = memmove(&buf->data[buf->len], str, sz + 1);
+  if (err == NULL)
+    return -1;
 
-  // terminate, just in case
-  buf->data[buf->len] = '\0';
+  buf->len += sz;
+  return sz; // bytes added
 }
 
 // insert bytes to the buffer but instead of string terminator,
 // length parameter decides the size.
 // this function is not as safe as buffy_add
-void buffy_addl(buffy_t *buf, const char *str, size_t len) {
+int buffy_addl(buffy_t *buf, const char *str, size_t len) {
   if ((buf->cap - buf->len) - 1 < len) {
-    buf->cap += len - (buf->cap - buf->len) + 1;
-    buf->data = realloc(buf->data, buf->cap);
+    size_t newsize = buf->cap + len - (buf->cap - buf->len) + 1;
+    buf->data = realloc(buf->data, newsize);
+    if (buf->data == NULL)
+      return -1;
+
+    buf->cap = newsize;
   }
 
-  for (int i = 0; i < len; i++) {
-    memset(&buf->data[buf->len], *str, 1);
-    buf->len++;
-    str++;
-  }
+  void *err = memmove(&buf->data[buf->len], str, len);
+  if (err == NULL)
+    return -1;
 
-  buf->data[buf->len] = '\0';
+  buf->len += len;
+  buf->data[buf->len] = 0;
+  return len; // bytes added
 }
 
 // sub the buffer
@@ -100,7 +103,7 @@ void buffy_clear(buffy_t *buf) {
 
 // remove the buffer from the memory
 void buffy_free(buffy_t *buf) {
-  return free((void *)buf->data);
+  return free(buf->data);
 }
 
 /*
