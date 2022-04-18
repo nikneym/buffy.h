@@ -3,12 +3,13 @@ buffy.h
 Simple string buffer implementation in C
 
 ## Installation
-Just download the `buffy.h` file and include it in your project.
+Download the `buffy.h` file, in one of your project files add `#define BUFFY_IMPL` BEFORE including the actual header and include the header simply by `#include "buffy.h"` wherever you desire.
 
 ## Usage Example
 ```c
-#include <stdio.h>
+#define BUFFY_IMPL
 #include "buffy.h"
+#include <stdio.h>
 
 // for printing and testing purposes
 void out(buffy_t *buf) {
@@ -45,28 +46,28 @@ int main(void) {
 
 ## Documentation
 
-### `buffy_init(buffy_t *buf, size_t sz)`
+### `int buffy_init(buffy_t *buf, size_t sz)`
 Initializes the buffer object. Allocates `sz` bytes for it
 
-### `buffy_add(buffy_t *buf, const char *str)`
+### `int buffy_add(buffy_t *buf, const char *str)`
 Inserts bytes to the buffer. This function stops at string terminator `\0`.
 
-### `buffy_addl(buffy_t *buf, const char *str, size_t len)`
+### `int buffy_addl(buffy_t *buf, const char *str, size_t len)`
 Inserts bytes to the buffer but length is decided by `len` parameter.
 
-### `buffy_sub(buffy_t *buf, size_t start, size_t end)`
+### `void buffy_sub(buffy_t *buf, size_t start, size_t end)`
 Takes two position indexes and clears everything but between this positions.
 
-### `buffy_del(buffy_t *buf, size_t sz)`
+### `void buffy_del(buffy_t *buf, size_t sz)`
 Removes bytes from the right side (end) of the buffer.
 
-### `buffy_fill(buffy_t *buf, char c)`
+### `void buffy_fill(buffy_t *buf, char c)`
 Fills the buffer with the desired character `c`.
 
-### `buffy_clear(buffy_t *buf)`
+### `void buffy_clear(buffy_t *buf)`
 Unfills (Zero initializing) the buffer.
 
-### `buffy_free(buffy_t *buf)`
+### `void buffy_free(buffy_t *buf)`
 Free the memory that's allocated by the buffer object.
 
 ## License
