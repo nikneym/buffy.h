@@ -1,5 +1,6 @@
-#include <stdio.h>
+#define BUFFY_IMPL
 #include "buffy.h"
+#include <stdio.h>
 
 void out(buffy_t *buf) {
   printf("%s\n", buf->data);
