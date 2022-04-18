@@ -1,4 +1,7 @@
 /* License is included at the end of the file */
+#ifndef BUFFY_H
+#define BUFFY_H
+#if defined(BUFFY_IMPL)
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -106,6 +109,8 @@ void buffy_free(buffy_t *buf) {
   return free(buf->data);
 }
 
+#endif
+#endif
 /*
 MIT License
 
